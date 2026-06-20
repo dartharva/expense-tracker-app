@@ -1,173 +1,119 @@
-# GitHub Pages Deployment Guide (VS Code GUI Only)
+# GitHub Pages Deployment Guide
 
-This guide walks you through publishing your Expense Tracker app to GitHub Pages using only VS Code's graphical interface.
+This document explains both:
+1. How deployment works in this project.
+2. The exact steps to publish updates.
 
-## What You're Doing
+## Deployment Model Used Here
 
-You're uploading the **finished app** (in the `dist/` folder) to GitHub, where it will be automatically hosted and accessible on the internet. Your friends can then visit a link to use your app!
+This repository uses the classic GitHub Pages branch deployment model.
 
----
+1. Your application source code lives on the main branch.
+2. A production build is generated into the local dist folder.
+3. The dist output is published to the gh-pages branch.
+4. GitHub Pages serves the site from gh-pages at root.
 
-## Step 1: Build the App Locally
+Because this is a project site (not a user site), the app is hosted under a subpath:
 
-Before deploying, you need to generate the `dist/` folder with your latest code.
+https://dartharva.github.io/expense-tracker-app/
 
-1. Open VS Code
-2. Go to **Terminal** → **New Terminal** (or press `Ctrl + ~`)
-3. Run: `npm run build`
-4. Wait for it to finish (you'll see ✓ built in 174ms)
-5. Close the terminal (or leave it open)
+## Why There Are Two Branches
 
-**Result:** The `dist/` folder now contains your ready-to-deploy app.
+1. main keeps the editable codebase.
+2. gh-pages keeps only the built static files that browsers need.
 
----
+This separation keeps source control clean and follows the most common classic Pages setup.
 
-## Step 2: Create a GitHub Repository for Deployment
+## Project Configuration That Makes This Work
 
-Go to **GitHub** (github.com) and log in:
+The deployment pipeline depends on these scripts in package.json:
 
-1. Click the **+** icon (top right) → **New repository**
-2. Name it something like: `expense-tracker-pages` (or any name)
-3. Choose **Public** (so it's accessible to your friends)
-4. Do **NOT** initialize with README, .gitignore, or license
-5. Click **Create repository**
+1. build:pages builds with the GitHub Pages base path.
+2. predeploy runs build:pages automatically before deployment.
+3. deploy publishes dist to gh-pages.
 
-**Result:** You now have an empty GitHub repo. Copy the URL shown (looks like: `https://github.com/yourname/expense-tracker-pages.git`)
+In short:
 
----
+1. npm run deploy
+2. predeploy runs first
+3. dist is generated with correct base URL
+4. dist is pushed to gh-pages
 
-## Step 3: Configure GitHub Pages
+The Vite base path is configured specifically for Pages builds, so static assets and routes resolve correctly under /expense-tracker-app/.
 
-Back on GitHub:
+## One-Time Repository Setup (Already Done For This Repo)
 
-1. Go to your new repo → **Settings** (tab at top)
-2. On the left sidebar, click **Pages**
-3. Under "Build and deployment":
-   - **Source:** Select "Deploy from a branch"
-   - **Branch:** Select `main` (don't worry if it doesn't exist yet)
-   - **Folder:** Select `/ (root)`
-4. Click **Save**
+If repeating this process for a new repository:
 
-**Result:** GitHub Pages is now configured. Once you push code, it will automatically deploy from the repo root.
+1. Create an empty GitHub repository.
+2. Push main branch.
+3. Run deployment once so gh-pages exists.
+4. In GitHub repository settings, open Pages.
+5. Set Source to Deploy from a branch.
+6. Set Branch to gh-pages and folder to / (root).
+7. Save.
 
----
+After that, each new deploy updates the same site URL.
 
-## Step 4: Initialize Git in VS Code (GUI)
+## Day-to-Day Update Flow
 
-Back in VS Code:
+Use this whenever you want to publish changes.
 
-1. Click the **Source Control** icon on the left sidebar (looks like a branch, or press `Ctrl + Shift + G`)
-2. Click **Initialize Repository**
-3. Choose the folder: `/home/atharva/Documents/Projects/expense-tracker-app` (your project root)
+1. Make your code changes locally.
+2. Commit and push main.
+3. Run npm run deploy.
+4. Wait about 30 to 120 seconds.
+5. Hard refresh the site in browser.
 
-**Result:** The Source Control panel now shows your project with pending changes.
+Recommended command sequence:
 
----
+1. npm install
+2. npm run test
+3. git add .
+4. git commit -m "Your message"
+5. git push
+6. npm run deploy
 
-## Step 5: Stage the `dist/` Folder
+## End-to-End Flow Summary
 
-In VS Code's **Source Control** panel:
+1. You write code in src and related files.
+2. Vite builds optimized static output into dist.
+3. gh-pages package pushes dist to gh-pages branch.
+4. GitHub Pages detects gh-pages updates.
+5. GitHub serves the latest files at the site URL.
+6. Users load the updated app.
 
-1. You'll see a list of files/folders marked as **Untracked** or **Changes**
-2. Hover over the **dist** folder → click the **+** button (or right-click → Stage)
-3. Also stage these files:
-   - `index.html`
-   - `vite.config.js`
-   - `package.json`
-   - `package-lock.json`
-4. You can safely ignore `.specify`, `.venv`, `.vscode`, `specs`, `node_modules`, etc.
+## Verification Checklist
 
-**Result:** The staged files appear under "Staged Changes".
+After deployment, verify:
 
----
-
-## Step 6: Commit Your Code
-
-Still in **Source Control**:
-
-1. At the top of the panel, click in the text box next to the commit icon (looks like ✓)
-2. Type a message like: `Deploy app to GitHub Pages`
-3. Press `Ctrl + Enter` (or click the commit checkmark icon)
-
-**Result:** Your changes are now committed locally.
-
----
-
-## Step 7: Connect to Your GitHub Repo
-
-In **Source Control**:
-
-1. Look for the section that says **Publish Branch** or **Sync** (at the top or in the panel)
-2. Click **Publish Branch**
-3. When prompted: **Select repository to publish to**
-   - Paste the GitHub repo URL from Step 2 (looks like: `https://github.com/yourname/expense-tracker-pages.git`)
-   - Press Enter
-4. VS Code may ask you to authenticate with GitHub. Follow the prompts (it opens a browser)
-
-**Result:** Your code is now pushed to GitHub!
-
----
-
-## Step 8: Verify Deployment
-
-Go back to GitHub:
-
-1. Refresh your repo page
-2. You should see your files (including `dist/`) listed
-3. Go to **Settings** → **Pages**
-4. Look for a message like: "Your site is live at: `https://username.github.io/expense-tracker-pages/`"
-5. Click that link!
-
-**Result:** Your app is now live on the internet! 🎉
-
----
-
-## For Your Friends
-
-Share this link with your friends:
-```
-https://username.github.io/expense-tracker-pages/
-```
-
-On **Android**, they can:
-1. Visit the link in Chrome
-2. Tap the menu (three dots) → **Install app**
-3. The app installs to their home screen
-4. **Important:** Their expenses are stored locally on their phone—only they can see them!
-
----
-
-## Future Deployments (Update the App)
-
-When you make changes and want to deploy:
-
-1. Run `npm run build` (in terminal)
-2. In **Source Control**, stage the changes
-3. Commit with a message like `"Update: fixed date format"`
-4. Click **Sync** (top of Source Control panel)
-
-Done! GitHub automatically re-deploys within seconds.
-
----
+1. GitHub has a recent commit on gh-pages.
+2. GitHub Pages settings still point to gh-pages root.
+3. Live URL loads without 404.
+4. App assets load without broken styles or scripts.
+5. PWA install and offline fallback still work.
 
 ## Troubleshooting
 
-**Q: The link shows a 404 or blank page**
-- Wait 2-3 minutes for GitHub to deploy
-- Check that **Settings → Pages** shows the correct branch (`main`) and folder (`/ (root)`)
+Site returns 404:
+1. Confirm Pages source is gh-pages root.
+2. Confirm gh-pages branch exists.
+3. Confirm repository is public or Pages is enabled for your plan.
 
-**Q: I see old code**
-- GitHub may cache old versions. Try opening in an **incognito/private browser window**
+Site shows old version:
+1. Hard refresh browser.
+2. Open in private window.
+3. Wait a minute and retry.
 
-**Q: I don't see a "Publish Branch" button**
-- You may have already connected to the repo. Look for **Sync** instead
+Assets fail to load:
+1. Ensure deploy was run via npm run deploy, not manual copy.
+2. Confirm Vite base is set for GitHub Pages build mode.
 
-**Q: My GitHub authentication doesn't work**
-- Click **Source Control** → look for a connection icon or error
-- Try signing out and back in: **VS Code Settings → Accounts**
+Deploy command fails:
+1. Run npm install.
+2. Ensure network and GitHub auth are valid.
+3. Re-run npm run deploy.
 
----
+## Current Live URL
 
-## Questions?
-
-This is a one-time setup. After this, updating your app is just: build → commit → sync.
+https://dartharva.github.io/expense-tracker-app/
