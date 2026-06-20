@@ -1,5 +1,7 @@
 import { watchServiceWorkerUpdates } from "./sw-update.js";
 
+const SW_VERSION = "v2";
+
 function validatePwaMetadata() {
   const manifest = document.querySelector("link[rel='manifest']");
   if (!manifest) {
@@ -32,7 +34,9 @@ export async function registerServiceWorker() {
     return;
   }
   try {
-    const registration = await navigator.serviceWorker.register(`${import.meta.env.BASE_URL}sw.js`);
+    const registration = await navigator.serviceWorker.register(
+      `${import.meta.env.BASE_URL}sw.js?${SW_VERSION}`,
+    );
     watchServiceWorkerUpdates(registration);
   } catch (error) {
     console.warn("Service worker registration failed", error);
