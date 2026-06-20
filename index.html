@@ -1,0 +1,97 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#0f766e" />
+    <link rel="manifest" href="/expense-tracker-app/manifest.webmanifest" />
+    <title>Expense Tracker</title>
+    <script type="module" crossorigin src="/expense-tracker-app/assets/index-DY8Zs-sV.js"></script>
+    <link rel="stylesheet" crossorigin href="/expense-tracker-app/assets/index-D1BKkKrE.css">
+  </head>
+  <body>
+    <aside id="app-drawer" class="app-drawer" aria-hidden="true">
+      <nav aria-label="Main navigation">
+        <a href="#capture" class="drawer-link" data-route-link>Add Expense</a>
+        <a href="#categories" class="drawer-link" data-route-link>Categories</a>
+        <a href="#export" class="drawer-link" data-route-link>Export CSV</a>
+        <a href="#list" class="drawer-link" data-route-link>Recent Expenses</a>
+      </nav>
+    </aside>
+    <button id="drawer-overlay" class="drawer-overlay" aria-hidden="true" tabindex="-1"></button>
+
+    <main class="app-shell">
+      <header class="app-header app-topbar">
+        <button id="menu-toggle" class="menu-toggle" aria-label="Open navigation menu" aria-expanded="false">
+          ☰
+        </button>
+        <div>
+          <h1>Expense Tracker</h1>
+          <p id="page-subtitle">Capture spending fast, even offline.</p>
+        </div>
+      </header>
+
+      <section id="alerts" aria-live="polite"></section>
+
+      <section class="card page" id="expense-capture" hidden>
+        <h2>Add Expense</h2>
+        <form id="expense-form">
+          <label>
+            Amount
+            <input id="expense-amount" name="amount" inputmode="decimal" placeholder="₹0.00" required />
+          </label>
+          <label>
+            Spent At
+            <input id="expense-spent-at" name="spentAt" type="text" placeholder="dd-mmm-yy (e.g., 20-Jun-26)" required />
+          </label>
+          <label>
+            Category
+            <select id="expense-category" name="categoryId" required></select>
+          </label>
+          <label>
+            Note
+            <input id="expense-note" name="note" maxlength="240" />
+          </label>
+          <button type="submit">Save Expense</button>
+        </form>
+      </section>
+
+      <section class="card page" id="category-management" hidden>
+        <h2>Manage Categories</h2>
+        <form id="category-form" class="category-form">
+          <label>
+            New Category
+            <input id="category-name" name="categoryName" required />
+          </label>
+          <button type="submit">Create Category</button>
+        </form>
+
+        <form id="category-rename-form" class="category-form">
+          <label>
+            Category to Rename
+            <select id="rename-category-id" name="categoryId" required></select>
+          </label>
+          <label>
+            New Name
+            <input id="rename-category-name" name="newName" required />
+          </label>
+          <button type="submit">Rename Category</button>
+        </form>
+      </section>
+
+      <section class="card page" id="export-actions" hidden>
+        <h2>Export</h2>
+        <button id="export-csv" type="button">Export CSV</button>
+      </section>
+
+      <section class="card page" id="expense-list-section" hidden>
+        <h2>Recent Expenses</h2>
+        <div class="expense-list-actions">
+          <button id="delete-selected-expenses" type="button" disabled>Delete Selected</button>
+        </div>
+        <ul id="expense-list"></ul>
+      </section>
+    </main>
+
+  </body>
+  </html>
