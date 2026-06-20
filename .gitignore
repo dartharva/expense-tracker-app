@@ -1,0 +1,10 @@
+/.github
+!/.github/workflows
+!/.github/workflows/**
+/.npmignore
+/.specify
+/.venv
+/.vscode
+/specs
+/node_modules
+/dist
